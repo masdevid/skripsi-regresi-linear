@@ -21,7 +21,7 @@ def predict():
             cy.append(c/ct)
         pre_X.append(cy)
         pre_y.append(t.id)
-    print(pre_X)
+        
     print('-------')
     print(np.array(pre_X))
     print(np.array(pre_y))
@@ -57,4 +57,4 @@ def predict():
     coeff = regr.coef_.tolist()
     coeff_det = r2_score(y_test, y_pred)
 
-    return jsonify({"coeff": coeff, "prediction": y_pred.tolist(),"MSE": mse, "COD": coeff_det}),200
+    return jsonify({"prediction": y_pred.tolist(),"MSE": mse, "COD": coeff_det, "coeff": coeff,  "X": pre_X, "y": pre_y}),200
