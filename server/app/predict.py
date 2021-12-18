@@ -9,40 +9,52 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 @app.route('/predict',methods=["GET"])
 def predict():
-    topik_count = []
+    pre_X = []
+    pre_y = []
     topiks = Topik.query.filter_by().all()
     for t in topiks:
-        print(t.id)
-        rows = Skripsi.query.filter_by(topik=t.id).group_by(Skripsi.tahun).all()
-        for y in rows:
-            print(y.tahun)
-    print(topik_count)
-    SPLIT = 5
-    # Load the diabetes dataset
-    diabetes_X, diabetes_y = datasets.load_diabetes(return_X_y=True)
+        # print(t.id)
+        cy = []
+        for y in [2018, 2019, 2020, 2021]:
+            c = Skripsi.query.filter_by(topik=t.id, tahun=y).count()
+            ct = Skripsi.query.filter_by(topik=t.id).count()
+            cy.append(c/ct)
+        pre_X.append(cy)
+        pre_y.append(t.id)
+    print(pre_X)
+    print('-------')
+    print(np.array(pre_X))
+    print(np.array(pre_y))
 
+    SPLIT = 2
+    # Load the diabetes dataset
+    # print(datasets.load_diabetes(return_X_y=True))
+    # X, y = datasets.load_diabetes(return_X_y=True)
+    # print(X)
+    X = np.array(pre_X)
+    y = np.array(pre_y)
     # Use only one feature
-    diabetes_X = diabetes_X[:, np.newaxis, 2]
+    X = X[:, np.newaxis, 2]
 
     # Split the data into training/testing sets
-    diabetes_X_train = diabetes_X[:-SPLIT]
-    diabetes_X_test = diabetes_X[-SPLIT:]
+    X_train = X[:-SPLIT]
+    X_test = X[-SPLIT:]
 
     # Split the targets into training/testing sets
-    diabetes_y_train = diabetes_y[:-SPLIT]
-    diabetes_y_test = diabetes_y[-SPLIT:]
+    y_train = y[:-SPLIT]
+    y_test = y[-SPLIT:]
 
     # Create linear regression object
     regr = linear_model.LinearRegression()
 
     # Train the model using the training sets
-    regr.fit(diabetes_X_train, diabetes_y_train)
+    regr.fit(X_train, y_train)
 
     # Make predictions using the testing set
-    diabetes_y_pred = regr.predict(diabetes_X_test)
+    y_pred = regr.predict(X_test)
 
-    mse =  mean_squared_error(diabetes_y_test, diabetes_y_pred)
+    mse =  mean_squared_error(y_test, y_pred)
     coeff = regr.coef_.tolist()
-    coeff_det = r2_score(diabetes_y_test, diabetes_y_pred)
+    coeff_det = r2_score(y_test, y_pred)
 
-    return jsonify({"coefficient": coeff, "diabetes_y_pred":diabetes_y_pred.tolist(),"mean_squared_error": mse, "coef_of_determination": coeff_det}),200
+    return jsonify({"coeff": coeff, "prediction": y_pred.tolist(),"MSE": mse, "COD": coeff_det}),200
