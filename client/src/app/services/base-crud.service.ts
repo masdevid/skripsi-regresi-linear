@@ -1,0 +1,43 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BaseApiService } from './base-api.service';
+import { HttpQueries } from './http-queries';
+
+export interface Count {
+  count: number;
+}
+@Injectable({
+  providedIn: 'root'
+})
+export class BaseCrudService<T> extends BaseApiService {
+
+  constructor(public override http: HttpClient) {
+    super(http);
+  }
+
+  getAll(query: HttpQueries){
+    const url = [this.baseUrl, this.endpoint].join('/')
+    const params = this.generateQueries(query)
+    return this.http.get<T[]>(url, { params })
+  }
+  getById(id: number){
+    const url = [this.baseUrl, this.endpoint, id].join('/')
+    return this.http.get<T>(url)
+  }
+  count(){
+    const url = [this.baseUrl, this.endpoint, 'count'].join('/')
+    return this.http.get<Count>(url)
+  }
+  updateById(id: number, data: T){
+    const url = [this.baseUrl, this.endpoint, id].join('/')
+    return this.http.put<T>(url, data)
+  }
+  create(data: T){
+    const url = [this.baseUrl, this.endpoint].join('/')
+    return this.http.post<T>(url, data)
+  }
+  removeById(id: number){
+    const url = [this.baseUrl, this.endpoint, id].join('/')
+    return this.http.delete<T>(url)
+  }
+}

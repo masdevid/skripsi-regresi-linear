@@ -74,6 +74,6 @@ class Mahasiswa(db.Model):
     
 class MahasiswaSchema(Schema):
     id = fields.Number()
-    name = fields.Str()
+    nama = fields.Str()
     nim = fields.Str()
     prodi = fields.Number()

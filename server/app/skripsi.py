@@ -11,6 +11,11 @@ def skripsiGetAll():
     skripsi = schema.dump(skripsi_object)
     return jsonify(skripsi),200
 
+@app.route('/skripsi/count',methods=["GET"])
+def skripsiCount():
+    skripsi = Skripsi.query.filter_by().count()
+    return jsonify({'count': skripsi}),200
+
 @app.route('/skripsi/<id>',methods=["GET"])
 def skripsiGetById(id):
     skripsi_object = Skripsi.query.filter_by(id=id).first()

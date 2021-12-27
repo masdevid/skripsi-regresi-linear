@@ -11,6 +11,11 @@ def prodiGetAll():
     prodi = schema.dump(prodi_object)
     return jsonify(prodi),200
 
+@app.route('/prodi/count',methods=["GET"])
+def prodiCount():
+    data = Prodi.query.filter_by().count()
+    return jsonify({'count': data}),200
+
 @app.route('/prodi/<id>',methods=["GET"])
 def prodiGetById(id):
     prodi_object = Prodi.query.filter_by(id=id).first()

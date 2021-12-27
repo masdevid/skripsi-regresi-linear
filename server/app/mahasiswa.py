@@ -17,6 +17,11 @@ def mahasiswaGetById(id):
     schema = MahasiswaSchema(many=False)  
     mahasiswa = schema.dump(mahasiswa_object)
     return jsonify(mahasiswa),200
+    
+@app.route('/mahasiswa/count',methods=["GET"])
+def mahasiswaCount():
+    data = Mahasiswa.query.filter_by().count()
+    return jsonify({'count': data}),200
 
 @app.route('/mahasiswa/<id>',methods=["PUT"])
 def mahasiswaUpdateById(id):    

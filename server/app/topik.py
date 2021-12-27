@@ -11,6 +11,12 @@ def topikGetAll():
     topik = schema.dump(topik_object)
     return jsonify(topik),200
 
+@app.route('/topik/count',methods=["GET"])
+def topikCount():
+    data = Topik.query.filter_by().count()
+    return jsonify({'count': data}),200
+    
+
 @app.route('/topik/<id>',methods=["GET"])
 def topikGetById(id):
     topik_object = Topik.query.filter_by(id=id).first()

@@ -19,7 +19,7 @@ def login():
         users = schema.dump(found_user)
         return jsonify(users),200
     else:
-        return jsonify(None), 401
+        return jsonify({'message':'Username & password tidak cocok'}), 401
 
 # USERS ENDPOINT 
 @app.route('/users',methods=["GET"])
