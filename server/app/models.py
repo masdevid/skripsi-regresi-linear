@@ -38,12 +38,34 @@ class TopikSchema(Schema):
     id = fields.Number()
     nama = fields.Str()
 
+class Mahasiswa(db.Model):   
+    id = db.Column(db.Integer(), primary_key=True)
+    nama = db.Column(db.String())
+    nim = db.Column(db.String())
+    prodi = db.Column(db.Integer(), db.ForeignKey('prodi.id'))
+    prodi_rel = db.relationship('Prodi', backref='Mahasiswa')
+    def __init__(self, id, nama, nim, prodi):
+        self.id = id
+        self.nama = nama
+        self.nim = nim
+        self.prodi = prodi
+    
+class MahasiswaSchema(Schema):
+    id = fields.Number()
+    nama = fields.Str()
+    nim = fields.Str()
+    prodi = fields.Number()
+    prodi_rel = fields.Nested(ProdiSchema)
+    
 class Skripsi(db.Model):   
     id = db.Column(db.Integer(), primary_key=True)
     judul = db.Column(db.String())
     topik = db.Column(db.Integer(), db.ForeignKey('topik.id'))
-    nim = db.Column(db.String())
+    topik_rel = db.relationship('Topik', backref='Skripsi')
+    nim = db.Column(db.String(), db.ForeignKey('mahasiswa.nim'))
+    mahasiswa = db.relationship('Mahasiswa', backref='Skripsi')
     prodi = db.Column(db.Integer(), db.ForeignKey('prodi.id'))
+    prodi_rel = db.relationship('Prodi', backref='Skripsi')
     tahun = db.Column(db.Integer())
     def __init__(self, id, judul, topik, nim, prodi, tahun):
         self.id = id
@@ -57,23 +79,10 @@ class SkripsiSchema(Schema):
     id = fields.Number()
     judul = fields.Str()
     topik = fields.Number()
+    topik_rel = fields.Nested(TopikSchema)
     nim = fields.Str()
+    mahasiswa = fields.Nested(MahasiswaSchema)
     prodi = fields.Number() 
     tahun = fields.Number()
+    prodi_rel = fields.Nested(ProdiSchema)
 
-class Mahasiswa(db.Model):   
-    id = db.Column(db.Integer(), primary_key=True)
-    nama = db.Column(db.String())
-    nim = db.Column(db.String())
-    prodi = db.Column(db.Integer(), db.ForeignKey('prodi.id'))
-    def __init__(self, id, nama, nim, prodi):
-        self.id = id
-        self.nama = nama
-        self.nim = nim
-        self.prodi = prodi
-    
-class MahasiswaSchema(Schema):
-    id = fields.Number()
-    nama = fields.Str()
-    nim = fields.Str()
-    prodi = fields.Number()

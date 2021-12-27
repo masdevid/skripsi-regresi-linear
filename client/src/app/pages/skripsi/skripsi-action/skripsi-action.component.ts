@@ -33,7 +33,7 @@ export class SkripsiActionComponent extends BaseActionComponent<Skripsi> impleme
       this.dataSource   = this.activatedRoute.snapshot.data['currentData'];
       this.prodiList = this.activatedRoute.snapshot.data['prodi'];
       this.topikList = this.activatedRoute.snapshot.data['topik']
-      this.redirectTo   = '/prodi'
+      this.redirectTo   = '/skripsi'
       this.subject      = 'judul';
       this.createForm();
     }

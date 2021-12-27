@@ -50,13 +50,13 @@
         <!-- Type Column -->
         <ng-container matColumnDef="prodi">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Prodi </th>
-          <td mat-cell *matCellDef="let row"> {{row.prodi }} </td>
+          <td mat-cell *matCellDef="let row"> {{row.prodi_rel?.nama }} </td>
         </ng-container>
 
         <!-- Name Column -->
         <ng-container matColumnDef="nim">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> NIM </th>
-          <td mat-cell *matCellDef="let row"> {{row.nim}} </td>
+          <td mat-cell *matCellDef="let row"> {{row.nim}} - {{row.mahasiswa?.nama}}</td>
         </ng-container>
         <!-- Name Column -->
         <ng-container matColumnDef="tahun">
@@ -69,7 +69,7 @@
         </ng-container>
         <ng-container matColumnDef="topik">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Topik </th>
-          <td mat-cell *matCellDef="let row"> {{row.topik}} </td>
+          <td mat-cell *matCellDef="let row"> {{row.topik_rel?.nama}} </td>
         </ng-container>
 
         <!-- Action Column -->

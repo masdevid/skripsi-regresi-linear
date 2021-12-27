@@ -1,12 +1,19 @@
 from app import app
-from app.models import Skripsi, SkripsiSchema
+from app.models import Skripsi, SkripsiSchema, Prodi, Topik, Mahasiswa
 from flask import jsonify, request
 
 @app.route('/skripsi',methods=["GET"])
 def skripsiGetAll():
     page = request.args.get('page') or 1
     limit = request.args.get('limit') or 10
-    skripsi_object = Skripsi.query.paginate(page=int(page), per_page=int(limit), error_out=False).items if int(limit) > 0 else Skripsi.query.filter_by().all()
+    skripsi_object = Skripsi.query\
+        .join(Prodi, Prodi.id == Skripsi.prodi)\
+        .join(Topik, Topik.id == Skripsi.topik)\
+        .join(Mahasiswa, Mahasiswa.nim == Skripsi.nim)\
+        .filter(Prodi.id == Skripsi.prodi)\
+        .filter(Topik.id == Skripsi.topik)\
+        .filter(Mahasiswa.nim == Skripsi.nim)\
+        .paginate(page=int(page), per_page=int(limit), error_out=False).items if int(limit) > 0 else Skripsi.query.filter_by().all()
     schema = SkripsiSchema(many=True)  
     skripsi = schema.dump(skripsi_object)
     return jsonify(skripsi),200
