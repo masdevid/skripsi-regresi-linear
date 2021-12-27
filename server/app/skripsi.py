@@ -1,12 +1,12 @@
 from app import app
 from app.models import Skripsi, SkripsiSchema
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 
 @app.route('/skripsi',methods=["GET"])
 def skripsiGetAll():
     page = request.args.get('page') or 1
     limit = request.args.get('limit') or 10
-    skripsi_object = Skripsi.query.paginate(page=int(page), per_page=int(limit), error_out=False).items
+    skripsi_object = Skripsi.query.paginate(page=int(page), per_page=int(limit), error_out=False).items if int(limit) > 0 else Skripsi.query.filter_by().all()
     schema = SkripsiSchema(many=True)  
     skripsi = schema.dump(skripsi_object)
     return jsonify(skripsi),200

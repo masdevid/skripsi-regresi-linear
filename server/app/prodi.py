@@ -1,12 +1,12 @@
 from app import app
 from app.models import Prodi, ProdiSchema
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 
 @app.route('/prodi',methods=["GET"])
 def prodiGetAll():
     page = request.args.get('page') or 1
     limit = request.args.get('limit') or 10
-    prodi_object = Prodi.query.paginate(page=int(page), per_page=int(limit), error_out=False).items
+    prodi_object = Prodi.query.paginate(page=int(page), per_page=int(limit), error_out=False).items if int(limit) > 0 else Prodi.query.filter_by().all()
     schema = ProdiSchema(many=True)  
     prodi = schema.dump(prodi_object)
     return jsonify(prodi),200

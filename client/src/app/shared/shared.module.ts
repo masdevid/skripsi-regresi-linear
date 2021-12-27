@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatDialogModule } from '@angular/material/dialog'
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,7 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
     MatFormFieldModule,
     MatIconModule,
     MatSnackBarModule,
-    MatDialogModule
+    NgSelectModule
   ],
 })
 export class SharedModule { }

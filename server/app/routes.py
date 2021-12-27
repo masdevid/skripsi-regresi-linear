@@ -1,6 +1,6 @@
 from app import app
 from app.models import User, UserSchema
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 from hashlib import md5
 
 @app.route('/')

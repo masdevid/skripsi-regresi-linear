@@ -1,1 +1,44 @@
-<p>skripsi-action works!</p>
+<div class="container-fluid">
+  <div class="row justify-content-center">
+
+    <div class="col-md-10 col-lg-8 col-xl-6">
+      <div class="card mt-5">
+        <div class="card-body">
+          <form class="row g-3" [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="col-12 mb-3">
+              <label for="nim">NIM</label>
+              <input type="text" formControlName="nim" class="form-control" id="nim" required>
+            </div>
+            <div class="col-12 mb-3">
+              <label for="judul">Judul</label>
+              <input type="text" formControlName="judul" class="form-control" id="judul" required>
+            </div>
+            <div class="col-12 mb-3">
+              <label for="tahun">Tahun</label>
+              <input type="year" formControlName="tahun" class="form-control" id="tahun" required>
+            </div>
+            <div class="col-12 mb-3">
+              <label for="prodi">Prodi</label>
+              <ng-select id="prodi" [items]="prodiList" bindValue="id" bindLabel="nama" formControlName="prodi"></ng-select>
+            </div>
+            <div class="col-12 mb-3">
+              <label for="topik">Topik</label>
+              <ng-select id="topik" [items]="topikList" bindValue="id" bindLabel="nama" formControlName="topik"></ng-select>
+            </div>
+
+            <div class="col-12 d-flex align-items-center justify-content-end">
+              <button class="btn btn-light mr-2" type="button" (click)="onBack()">
+                Back
+              </button>
+              <button class="btn btn-primary" type="submit">
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

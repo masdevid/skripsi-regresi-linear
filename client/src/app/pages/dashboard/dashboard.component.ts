@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(private topikService: TopikService, private mahasiswaService: MahasiswaService, private prodiService: ProdiService, private skripsiService: SkripsiService) { }
   isLoading = false;
-  topikList: Topik[];
+  topikList: Topik[] = [];
   result: any;
   counter = {
     mahasiswa: 0,
@@ -41,7 +41,9 @@ export class DashboardComponent implements OnInit {
   getTopic(){
     this.topikService.getAll({ limit: 0, offset: 0}).subscribe(topic => {
       this.topikList = topic;
-      this.counter.topik = topic.length;
+    })
+    this.topikService.count().subscribe(data => {
+      this.counter.topik = data.count
     })
   }
   getSkripsi(){
@@ -61,11 +63,14 @@ export class DashboardComponent implements OnInit {
   }
   predict(){
     this.isLoading = true;
-    this.topikService.predict().subscribe((res) => {
-      this.result = res;
-      this.isLoading = false;
-    }, () => {
-      this.isLoading = false;
+    this.topikService.predict().subscribe({
+      next: (res) => {
+        this.result = res;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      }
     })
   }
 }

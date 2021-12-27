@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { TopikComponent } from './topik.component';
 import { TopikActionComponent } from './topik-action/topik-action.component';
 import { RouterModule, Routes } from '@angular/router';
-import { SharedModule } from 'src/app/shared/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { TopikResolverService } from './topik-resolver.service';
 
 const routes: Routes = [
   {
@@ -13,7 +14,9 @@ const routes: Routes = [
   {
     path: 'action',
     component: TopikActionComponent,
-
+    resolve: {
+      currentData: TopikResolverService,
+    }
   }
 ]
 

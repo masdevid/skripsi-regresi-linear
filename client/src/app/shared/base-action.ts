@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject } from "rxjs";
-import * as moment from 'moment';
-import { BaseApiService } from "../services/base-api.service";
 import { HelpersService } from "../services/helpers.service";
+import { BaseCrudService } from "../services/base-crud.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-base-action',
@@ -25,127 +25,115 @@ export class BaseActionComponent<T> implements OnInit, OnDestroy {
     public router: Router,
     public activatedRoute: ActivatedRoute,
     public helpers: HelpersService,
-    public service: BaseApiService<T>,
+    public service: BaseCrudService<T>,
     public fb: FormBuilder,
-  ) {
-    this.checkQueryParam();
-  }
-  createForm(): void {
-    this.form = this.fb.group(this.defaultForm());
-    this.setForm();
-  }
-  defaultForm(){
-    return {}
-  }
-  ngOnInit(): void {
-
-  }
-  setForm(){
-    if (this.dataSource) {
-      this.form.patchValue(this.dataSource)
+    public sb: MatSnackBar
+    ) {
+      this.checkQueryParam();
     }
-    setTimeout(() => {
-     this.afterSetForm()
-    });
-  }
-  afterSetForm(): void {
-
-  }
-  checkQueryParam(): void {
-    this.activatedRoute.queryParams.subscribe(query => {
-      this.query = query;
-    });
-    if (this.router.getCurrentNavigation()?.extras?.state?.data) {
-      this.dataSource = this.router.getCurrentNavigation()?.extras?.state?.data
-    } else {
-      this.service.getById(this.query.id)
-        .then(data => {
-          this.dataSource = data;
-          this.setForm()
-        })
+    createForm(): void {
+      this.form = this.fb.group(this.defaultForm());
+      this.setForm();
     }
-  }
+    defaultForm(){
+      return {}
+    }
+    ngOnInit(): void {
 
-  onSubmit(): void {
-    if (this.form.valid) {
-      if (this.query.m === 'add') {
-        this.insert();
-      } else {
-        this.update();
+    }
+    setForm(){
+      if (this.dataSource) {
+        this.form.patchValue(this.dataSource)
       }
-    }
-  }
-
-  onBack(isBack = true): void {
-    if (isBack) {
-      this.router.navigate([`../../${this.redirectTo}`], {
-        relativeTo: this.activatedRoute
+      setTimeout(() => {
+        this.afterSetForm()
       });
     }
-  }
+    afterSetForm(): void {
 
-  beforeSave(): T {
-    return this.checkDateBeforeSave(this.form.value);
-  }
+    }
+    checkQueryParam(): void {
+      this.activatedRoute.queryParams.subscribe(query => {
+        this.query = query;
+      });
+      this.service.getById(this.query.id)
+      .subscribe(data => {
+        this.dataSource = data;
+        this.setForm()
+      })
+    }
 
-  checkDateBeforeSave(data: any): T {
-    Object.keys(data).forEach(key => {
-      const dataType = typeof data[key];
-      if (dataType == 'object' && moment.isMoment(data[key])) {
-        data[key] = moment(data[key]).format('YYYY-MM-DD');
+    onSubmit(): void {
+      if (this.form.valid) {
+        if (this.query.m === 'add') {
+          this.insert();
+        } else {
+          this.update();
+        }
       }
-    });
-    return data;
-  }
+    }
 
-  insert(): void {
-    const data = this.beforeSave();
-    this.service.insert(data).then(() => {
-      this.onSuccess()
-    }).catch(err => this.onError(err))
-  }
-  update(): void {
-    const data = this.beforeSave();
-    this.service.updateById(this.query.id, data).then(() => {
-      this.onSuccess()
-    }).catch(err => this.onError(err))
-  }
-  onSuccess(): void {
-    this.helpers.sbSuccess(`saved!`);
-    this.onBack();
-  }
+    onBack(isBack = true): void {
+      if (isBack) {
+        this.router.navigate([`../../${this.redirectTo}`], {
+          relativeTo: this.activatedRoute
+        });
+      }
+    }
 
-  onError(err: any): void {
-    this.helpers.sbError(err);
-  }
+    beforeSave(): T {
+      return this.form.value;
+    }
 
-  handleImageChange(event: any, imageFormName: string): void {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = () => this.sourceImage = reader.result;
-      reader.readAsDataURL(file);
-      this.form.get(imageFormName)?.setValue(file);
+    insert(): void {
+      const data = this.beforeSave();
+      this.service.create(data).subscribe(() => {
+        this.onSuccess()
+      }, err => this.onError(err))
+    }
+    update(): void {
+      const data = this.beforeSave();
+      this.service.updateById(this.query.id, data).subscribe(() => {
+        this.onSuccess()
+      }, err => {
+        this.onError(err)
+      })
+    }
+    onSuccess(): void {
+      this.sb.open(`saved!`);
+      this.onBack();
+    }
+
+    onError(err: any): void {
+      this.sb.open(err.error.message);
+    }
+
+    handleImageChange(event: any, imageFormName: string): void {
+      if (event.target.files && event.target.files[0]) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => this.sourceImage = reader.result;
+        reader.readAsDataURL(file);
+        this.form.get(imageFormName)?.setValue(file);
+      }
+    }
+
+    convertToFormDataFormat(data: any): FormData {
+      const formData = new FormData();
+      Object.keys(data).forEach(key => {
+        let value;
+        if (typeof data[key] == 'boolean') {
+          value = data[key] ? 1 : 0;
+        } else {
+          value = data[key] ? data[key] : '';
+        }
+        formData.append(key, value);
+      });
+      return formData;
+    }
+
+    ngOnDestroy(): void {
+      this.unsubs.next('');
+      this.unsubs.complete();
     }
   }
-
-  convertToFormDataFormat(data: any): FormData {
-    const formData = new FormData();
-    Object.keys(data).forEach(key => {
-      let value;
-      if (typeof data[key] == 'boolean') {
-        value = data[key] ? 1 : 0;
-      } else {
-        value = data[key] ? data[key] : '';
-      }
-      formData.append(key, value);
-    });
-    return formData;
-  }
-
-  ngOnDestroy(): void {
-    this.unsubs.next('');
-    this.unsubs.complete();
-    // this.service.unsubscribeAll()
-  }
-}

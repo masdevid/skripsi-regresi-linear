@@ -1,9 +1,9 @@
 from app import app
 from app.models import Topik, TopikSchema, Skripsi, SkripsiSchema
-from flask import Flask, jsonify, request
+from flask import jsonify
 from sqlalchemy import func
 import numpy as np
-from sklearn import datasets, linear_model
+from sklearn import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 
 

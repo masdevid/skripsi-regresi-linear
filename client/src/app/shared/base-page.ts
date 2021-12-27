@@ -11,7 +11,7 @@ import { BaseCrudService } from "../services/base-crud.service";
 import { HelpersService } from "../services/helpers.service";
 import { HttpQueries } from "../services/http-queries";
 import { CheckSelect } from "./check-select";
-import { ConfirmDialogComponent } from "./shared/confirm-dialog/confirm-dialog.component";
+import { ConfirmDialogComponent } from "./confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-base-page',
@@ -117,7 +117,7 @@ export class BasePage<T> implements OnInit{
   remove(data: T | any): void {
     this.dialog?.open(ConfirmDialogComponent, {
       width: '400px',
-      data: {message: data.name}
+      data: {message: data[this.subject]}
     })
     .afterClosed()
     .subscribe((result) => {
@@ -125,15 +125,16 @@ export class BasePage<T> implements OnInit{
         this.service
         .removeById(data[this.primaryKey])
         .subscribe(
-          () => {
-            this.afterRemove()
-            this.sb?.open(`${this.deleteMessage()}`);
-          },
-          (err) => {
-            this.afterRemove()
-            this.sb?.open(err);
-          }
-          )
+          {
+            next: () => {
+              this.afterRemove()
+              this.sb.open(`${this.deleteMessage()}`);
+            },
+            error: (err) => {
+              this.afterRemove()
+              this.sb.open(err.error.message);
+            }
+          })
         }
       });
     }
@@ -142,7 +143,7 @@ export class BasePage<T> implements OnInit{
     }
     afterRemove(): void {
       // custom function after remove event
-      this.service.getAll(this.q);
+      this.getData()
       this.select.selection.clear(); // Important!
     }
     deleteSelected(selected: T[]): void {
@@ -163,11 +164,11 @@ export class BasePage<T> implements OnInit{
               {
                 next: () => {
                   this.afterRemove();
-                  this.sb?.open(`${selected.length} data ${this.deleteMessage()}`);
+                  this.sb.open(`${selected.length} data ${this.deleteMessage()}`);
                 },
                 error: (err) => {
                   this.afterRemove();
-                  this.sb?.open(err);
+                  this.sb.open(err.error.message);
                 }
               }
               );

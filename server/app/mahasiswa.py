@@ -1,12 +1,12 @@
 from app import app
 from app.models import Mahasiswa, MahasiswaSchema
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 
 @app.route('/mahasiswa',methods=["GET"])
 def mahasiswaGetAll():
     page = request.args.get('page') or 1
     limit = request.args.get('limit') or 10
-    mahasiswa_object = Mahasiswa.query.paginate(page=int(page), per_page=int(limit), error_out=False).items
+    mahasiswa_object = Mahasiswa.query.paginate(page=int(page), per_page=int(limit), error_out=False).items if int(limit) > 0 else Mahasiswa.query.filter_by().all()
     schema = MahasiswaSchema(many=True)  
     mahasiswa = schema.dump(mahasiswa_object)
     return jsonify(mahasiswa),200

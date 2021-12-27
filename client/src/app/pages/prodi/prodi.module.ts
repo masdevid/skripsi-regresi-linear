@@ -3,19 +3,21 @@ import { CommonModule } from '@angular/common';
 import { ProdiComponent } from './prodi.component';
 import { ProdiActionComponent } from './prodi-action/prodi-action.component';
 import { RouterModule, Routes } from '@angular/router';
-import { SharedModule } from 'src/app/shared/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { ProdiResolverService } from './prodi-resolver.service';
 
 
 const routes: Routes = [
   {
     path: '',
-    component: ProdiComponent
-
+    component: ProdiComponent,
   },
   {
     path: 'action',
     component: ProdiActionComponent,
-
+    resolve: {
+      currentData: ProdiResolverService,
+    }
   }
 ]
 

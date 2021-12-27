@@ -1,8 +1,7 @@
-<div mat-dialog-title>
+<div mat-dialog-title align="center">
   <h2> Confirmation Dialog </h2>
-  <button class="btn btn-close-modal" (click)="dialog.close(false)"> <i class="uil uil-times"></i> </button>
 </div>
-<div mat-dialog-content class="text-center">
+<div mat-dialog-content align="center">
   <p class="mb-0" *ngIf="data">
     <ng-container *ngIf="data.message">
       Are you sure about to delete <span class="text-danger fw-bold">{{data.message}}</span> ?
@@ -17,6 +16,6 @@
 </div>
 
 <mat-dialog-actions align="center">
-  <button class="btn btn-outline-secondary me-3" (click)="dialog.close(false)">Cancel</button>
-  <button class="btn btn-primary" (click)="dialog.close(true)">Yes</button>
+    <button class="btn btn-outline-secondary mr-3" (click)="dialog.close(false)">Cancel</button>
+    <button class="btn btn-primary" (click)="dialog.close(true)">Yes</button>
 </mat-dialog-actions>

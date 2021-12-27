@@ -1,12 +1,12 @@
 from app import app
 from app.models import Topik, TopikSchema
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 
 @app.route('/topik',methods=["GET"])
 def topikGetAll():
     page = request.args.get('page') or 1
-    limit = request.args.get('limit') or 10
-    topik_object = Topik.query.paginate(page=int(page), per_page=int(limit), error_out=False).items
+    limit =  request.args.get('limit')
+    topik_object = Topik.query.paginate(page=int(page), per_page=int(limit), error_out=False).items if int(limit) > 0 else Topik.query.filter_by().all()
     schema = TopikSchema(many=True)  
     topik = schema.dump(topik_object)
     return jsonify(topik),200
