@@ -67,8 +67,8 @@ def userCreate():
     if found.first(): 
         return jsonify({ 'message': f'User {username} already exist'}), 422
 
-    row = User(None, username, md5(password.encode()).hexdigest())
-    found.session.add(row)
+    data = User(None, username, md5(password.encode()).hexdigest())
+    found.session.add(data)
     found.session.commit()
     schema = UserSchema(many=False)  
     users = schema.dump(data)

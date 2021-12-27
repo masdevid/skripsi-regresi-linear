@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: 'login', loadChildren: ()=>import('./pages/login/login.module').then(m => m.LoginModule)},
   { path: 'mahasiswa', loadChildren: ()=>import('./pages/mahasiswa/mahasiswa.module').then(m => m.MahasiswaModule), canActivate: [AuthGuard]},
   { path: 'prodi', loadChildren: ()=>import('./pages/prodi/prodi.module').then(m => m.ProdiModule), canActivate: [AuthGuard]},
+  { path: 'users', loadChildren: ()=>import('./pages/users/users.module').then(m => m.UsersModule), canActivate: [AuthGuard]},
   { path: 'topik', loadChildren: ()=>import('./pages/topik/topik.module').then(m => m.TopikModule), canActivate: [AuthGuard]},
   { path: 'skripsi', loadChildren: ()=>import('./pages/skripsi/skripsi.module').then(m => m.SkripsiModule), canActivate: [AuthGuard]},
   { path: 'dashboard', loadChildren: ()=>import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule), canActivate: [AuthGuard]},

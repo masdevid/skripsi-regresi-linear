@@ -38,6 +38,10 @@ export class HeaderComponent implements OnInit {
     {
       url: 'skripsi',
       label: 'Skripsi'
+    },
+    {
+      url: 'users',
+      label: 'Admin Pengguna'
     }
   ]
   currentUser: User | null = null;
